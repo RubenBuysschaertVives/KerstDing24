@@ -33,8 +33,6 @@ void InitDAC(void)
 	
 	// 0 Volt op die uitgang zetten.
 	DAC->DHR12R2 = 0;
-	
-	// TODO: buffer inschakelen?
 }
 
 void SetDacX(uint16_t dacValue)

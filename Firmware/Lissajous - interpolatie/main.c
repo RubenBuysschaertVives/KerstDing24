@@ -19,7 +19,7 @@ uint16_t count = 0, i = 0;
 volatile uint32_t ticks = 0;
 char text[101];
 Lissajous lissajous;
-float a, xt, yt, y0;			// yt = a.xt + y0
+float a, xt, yt, y0;			// yt = a * dx + y0 of xt = dy/a + x0
 
 int main(void)
 {
@@ -704,7 +704,7 @@ int main(void)
 	{
 		lissajous.points[0].x = 1843;
 		lissajous.points[0].y = 421;
-		lissajous.points[0].suppressPreviousTrack = false;
+		lissajous.points[0].suppressPreviousTrack = true;
 		lissajous.points[1].x = 1907;
 		lissajous.points[1].y = 1003;
 		lissajous.points[1].suppressPreviousTrack = false;
@@ -1051,52 +1051,54 @@ void DrawLissajous(Lissajous* lissajous, uint16_t startIndex, uint16_t count)
 			if(lissajous->points[i].x != lissajous->points[i+1].x)
 			{
 				// Geen verticale rechte.
-				// Richtingscoëfficient berekenen.
+				// Richtingscoëfficient berekenen voor de formule: y = a.dx + y0.
+				// Als je de y wil laten variëren, dan moet je deze formule gebruiken: x = dy/a + x0.
 				a = (float)(lissajous->points[i+1].y - lissajous->points[i].y)/(float)(lissajous->points[i+1].x - lissajous->points[i].x);
-				// Offset berekenen.
-				// TODO: vergelijking fine tunen.
-				y0 = lissajous->points[i].y - a*lissajous->points[i].x;
 				
+				// Gaat het over een hellingsgraad van minder dan of meer dan 45°?
 				if((a > -1) && (a < 1))
 				{
-					// Onder de 45°, laat x variëren.
+					// De hoek is minder scherp dan 45°, laat x variëren voor betere nauwkeurigheid.
 					if(lissajous->points[i].x < lissajous->points[i+1].x)
 					{
-						// Eerste punt ligt dichter bij de oorsprong dan tweede.					
+						// Tweede punt ligt verder van de oorsprong dan het eerste.					
 						for(j = lissajous->points[i].x; j <= (lissajous->points[i+1].x - INTERPOLATION_STEP_SIZE); j +=INTERPOLATION_STEP_SIZE)
 						{
 							xt = j;
 							SetDacX((uint16_t)xt);
 							
-							yt = a* xt + y0;
+							// yt = a * dx + y0;
+							yt = a * (xt - lissajous->points[i].x) + lissajous->points[i].y;
 							SetDacY((uint16_t)yt);
 						}
 					}
 					else
 					{
-						// Tweede punt ligt dichter bij de oorsprong dan eerste.
+						// Tweede punt ligt dichter bij de oorsprong dan het eerste.
 						for(j = lissajous->points[i].x; j >= (lissajous->points[i+1].x + INTERPOLATION_STEP_SIZE); j-=INTERPOLATION_STEP_SIZE)
 						{
 							xt = j;
 							SetDacX((uint16_t)xt);
 							
-							yt = a* xt + y0;
+							// yt = a * dx + y0;
+							yt = a * (xt - lissajous->points[i].x) + lissajous->points[i].y;
 							SetDacY((uint16_t)yt);
 						}
 					}				
 				}
 				else
 				{
-					// Boven de 45°, laat y variëren.
+					// De hoek is scherper dan 45°, laat y variëren voor betere nauwkeurigheid.
 					if(lissajous->points[i].y < lissajous->points[i+1].y)
 					{
 						// Eerste punt ligt dichter bij de oorsprong dan tweede.					
 						for(j = lissajous->points[i].y; j <= (lissajous->points[i+1].y - INTERPOLATION_STEP_SIZE); j+=INTERPOLATION_STEP_SIZE)
 						{
 							yt = j;
-							SetDacY((uint16_t)yt);
+							SetDacY((uint16_t)yt);							
 							
-							xt = (yt - y0)/a;
+							// xt = dy/a + x0
+							xt = (yt - lissajous->points[i].y)/a + lissajous->points[i].x;
 							SetDacX((uint16_t)xt);						
 						}
 					}
@@ -1108,7 +1110,8 @@ void DrawLissajous(Lissajous* lissajous, uint16_t startIndex, uint16_t count)
 							yt = j;
 							SetDacY((uint16_t)yt);
 							
-							xt = (yt - y0)/a;
+							// xt = dy/a + x0
+							xt = (yt - lissajous->points[i].y)/a + lissajous->points[i].x;
 							SetDacX((uint16_t)xt);	
 						}
 					}
