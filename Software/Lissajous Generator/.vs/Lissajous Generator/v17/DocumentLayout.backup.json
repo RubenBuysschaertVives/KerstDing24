@@ -1,0 +1,84 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Rubu\\projecten\\KerstDing24 - Oscilloscoop STM32\\Software\\Lissajous Generator\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{03267E95-3B68-41DA-B4B7-183870B0367E}|Lissajous Generator\\Lissajous Generator.csproj|c:\\rubu\\projecten\\kerstding24 - oscilloscoop stm32\\software\\lissajous generator\\lissajous generator\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{03267E95-3B68-41DA-B4B7-183870B0367E}|Lissajous Generator\\Lissajous Generator.csproj|solutionrelative:lissajous generator\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{03267E95-3B68-41DA-B4B7-183870B0367E}|Lissajous Generator\\Lissajous Generator.csproj|C:\\Rubu\\projecten\\KerstDing24 - Oscilloscoop STM32\\Software\\Lissajous Generator\\lissajous generator\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{03267E95-3B68-41DA-B4B7-183870B0367E}|Lissajous Generator\\Lissajous Generator.csproj|solutionrelative:lissajous generator\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{03267E95-3B68-41DA-B4B7-183870B0367E}|Lissajous Generator\\Lissajous Generator.csproj|C:\\Rubu\\projecten\\KerstDing24 - Oscilloscoop STM32\\Software\\Lissajous Generator\\lissajous generator\\lissajouspoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{03267E95-3B68-41DA-B4B7-183870B0367E}|Lissajous Generator\\Lissajous Generator.csproj|solutionrelative:lissajous generator\\lissajouspoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{03267E95-3B68-41DA-B4B7-183870B0367E}|Lissajous Generator\\Lissajous Generator.csproj|C:\\Rubu\\projecten\\KerstDing24 - Oscilloscoop STM32\\Software\\Lissajous Generator\\lissajous generator\\kerstboom.jpg||{58961B49-13E0-48C0-9258-13CBC4D40279}",
+      "RelativeMoniker": "D:0:0:{03267E95-3B68-41DA-B4B7-183870B0367E}|Lissajous Generator\\Lissajous Generator.csproj|solutionrelative:lissajous generator\\kerstboom.jpg||{58961B49-13E0-48C0-9258-13CBC4D40279}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "kerstboom.jpg",
+              "DocumentMoniker": "C:\\Rubu\\projecten\\KerstDing24 - Oscilloscoop STM32\\Software\\Lissajous Generator\\Lissajous Generator\\kerstboom.jpg",
+              "RelativeDocumentMoniker": "Lissajous Generator\\kerstboom.jpg",
+              "ToolTip": "C:\\Rubu\\projecten\\KerstDing24 - Oscilloscoop STM32\\Software\\Lissajous Generator\\Lissajous Generator\\kerstboom.jpg",
+              "RelativeToolTip": "Lissajous Generator\\kerstboom.jpg",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001533|",
+              "WhenOpened": "2024-11-28T08:08:27.038Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "LissajousPoint.cs",
+              "DocumentMoniker": "C:\\Rubu\\projecten\\KerstDing24 - Oscilloscoop STM32\\Software\\Lissajous Generator\\Lissajous Generator\\LissajousPoint.cs",
+              "RelativeDocumentMoniker": "Lissajous Generator\\LissajousPoint.cs",
+              "ToolTip": "C:\\Rubu\\projecten\\KerstDing24 - Oscilloscoop STM32\\Software\\Lissajous Generator\\Lissajous Generator\\LissajousPoint.cs",
+              "RelativeToolTip": "Lissajous Generator\\LissajousPoint.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-28T08:08:25.769Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Rubu\\projecten\\KerstDing24 - Oscilloscoop STM32\\Software\\Lissajous Generator\\Lissajous Generator\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "Lissajous Generator\\MainWindow.xaml",
+              "ToolTip": "C:\\Rubu\\projecten\\KerstDing24 - Oscilloscoop STM32\\Software\\Lissajous Generator\\Lissajous Generator\\MainWindow.xaml",
+              "RelativeToolTip": "Lissajous Generator\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-11-28T08:08:24.413Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Rubu\\projecten\\KerstDing24 - Oscilloscoop STM32\\Software\\Lissajous Generator\\Lissajous Generator\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "Lissajous Generator\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Rubu\\projecten\\KerstDing24 - Oscilloscoop STM32\\Software\\Lissajous Generator\\Lissajous Generator\\MainWindow.xaml.cs",
+              "RelativeToolTip": "Lissajous Generator\\MainWindow.xaml.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAAAHsAAABPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-28T08:08:23.034Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

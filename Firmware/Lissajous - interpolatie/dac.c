@@ -8,8 +8,7 @@ void InitDAC(void)
 	// Clock voor GPIOA inschakelen.
 	RCC->AHBENR = RCC->AHBENR | RCC_AHBENR_GPIOAEN;
 	
-	// PA4 = DAC OUT 1 als analoge 'ingang' zetten. Dat is nodig ondanks dat 
-	// die pin eigenlijk een analoge uitgang is.
+	// PA4 = DAC OUT 1 als analoog zetten.
 	GPIOA->MODER |= GPIO_MODER_MODER4;
 	
 	// DAC van klok voorzien.
@@ -21,8 +20,7 @@ void InitDAC(void)
 	// 0 Volt op die uitgang zetten.
 	DAC->DHR12R1 = 0;
 	
-	// PA5 = DAC OUT 2 als analoge 'ingang' zetten. Dat is nodig ondanks dat 
-	// die pin eigenlijk een analoge uitgang is.
+	// PA5 = DAC OUT 2 als analoog zetten.
 	GPIOA->MODER |= GPIO_MODER_MODER5;
 	
 	// DAC van klok voorzien.
