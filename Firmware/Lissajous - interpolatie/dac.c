@@ -2,6 +2,7 @@
 
 // PA4 is DAC OUT 1.
 // PA5 is DAC OUT 2.
+// Let op: bij een Nucleo-bord is PA5 verbonden met de on board LED... Verwijden SB21 indien gewenst.
 
 void InitDAC(void)
 {
@@ -21,6 +22,7 @@ void InitDAC(void)
 	DAC->DHR12R1 = 0;
 	
 	// PA5 = DAC OUT 2 als analoog zetten.
+	// Let op: bij een Nucleo-bord is PA5 verbonden met de on board LED... Verwijden SB21 indien gewenst.
 	GPIOA->MODER |= GPIO_MODER_MODER5;
 	
 	// DAC van klok voorzien.

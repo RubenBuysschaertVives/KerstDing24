@@ -4,6 +4,7 @@
 	#define DAC_DEFINED
 	// PA4 is DAC OUT 1.
 	// PA5 is DAC OUT 2.
+	// Let op: bij een Nucleo-bord is PA5 verbonden met de on board LED... Verwijden SB21 indien gewenst.
 	
 	void InitDAC(void);
 	void SetDacX(uint16_t dacValue);
