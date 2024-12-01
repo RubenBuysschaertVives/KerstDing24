@@ -1,134 +1,93 @@
-# OPM: getest in python 3.10.0. Een hogere versie werkte niet op het ogenblik van testen.
+# https://ai.google.dev/edge/mediapipe/solutions/vision/gesture_recognizer/index
+# Codevoorbeeld via: https://colab.research.google.com/github/googlesamples/mediapipe/blob/main/examples/gesture_recognizer/python/gesture_recognizer.ipynb#scrollTo=OMjuVQiDYJKF
+# Model via: https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task
 
+import urllib
 import cv2
 import mediapipe as mp
 import serial       # pip install pyserial uitvoeren vooraf.
 import math
+import mediapipe as mp
+from mediapipe.tasks import python
+from mediapipe.tasks.python import vision
 
-# Afstand berekenen tussen twee punten.
-def GetVectorLength(pointOne, pointTwo):
-    # Via stelling van Pythagoras de vectorlengte berekenen.
-    vectorLength = math.sqrt(
-        math.pow(
-            (pointOne.x - pointTwo.x),
-            2
-        ) + 
-        math.pow(
-            (pointOne.y - pointTwo.y),
-            2
-        )
-    )
+# # Hand detection maken.
+# hand_landmarker_base_options = python.BaseOptions(model_asset_path='hand_landmarker.task')
+# hand_landmarker_options = vision.HandLandmarkerOptions(base_options=hand_landmarker_base_options,
+#                                        num_hands=2)
+# hand_detector = vision.HandLandmarker.create_from_options(hand_landmarker_options)
 
-    # Absolute waarde nemen.
-    return abs(vectorLength)
+# Gesture recognizer objecten maken.
+VisionRunningMode = mp.tasks.vision.RunningMode
+gesture_recognizer_base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
+gesture_recognizer_options = vision.GestureRecognizerOptions(base_options=gesture_recognizer_base_options,
+                                        running_mode=VisionRunningMode.VIDEO,
+                                        num_hands=2)
+gesture_recognizer = vision.GestureRecognizer.create_from_options(gesture_recognizer_options)
 
-# COM-poort openen.
-# serialPort = serial.Serial('COM1')
-# serialPort.write(str.encode("Starting...\r\n"))
-# serialPort.close()
+# # De mogelijkheid ophalen om de detecties van MediaPipe later te tekenen via OpenCV.
+# mp_drawing = mp.solutions.drawing_utils
 
-# De mogelijkheid ophalen om de detecties van MediaPipe later te tekenen via OpenCV.
-mp_drawing = mp.solutions.drawing_utils
-
-# Holistic model importeren.
-mp_holistic = mp.solutions.holistic
+# # Holistic model importeren.
+# mp_holistic = mp.solutions.hand
 
 # Webcam openen via OpenCV.
 cap = cv2.VideoCapture(0)
-# cap = cv2.VideoCapture("linkerhandzwaai.mp4")
-# cap = cv2.VideoCapture("beide handen zwaai en V.mp4")
-# cap = cv2.VideoCapture("RTSP 1.mp4")
-# cap = cv2.VideoCapture("RTSP 1.mkv")
-# cap = cv2.VideoCapture('rtsp://VIVESCAM:VIVESCAM_1@10.198.120.59:554/videoMain')
 
-# MediaPipe model combineren met OpenCV.
-with mp_holistic.Holistic(min_detection_confidence = 0.5, min_tracking_confidence = 0.5) as holistic:
-    while(cap.isOpened()):
-        ret, frame = cap.read() 
+# Frame rate instellen (lukt nog niet).
+# cap = cap.set(cv2.CAP_PROP_FPS, 5)
 
-        # # Herschalen indien nodig.
-        # scale_percent = 40 # percent of original size
-        # width = int(frame.shape[1] * scale_percent / 100)
-        # height = int(frame.shape[0] * scale_percent / 100)
-        # dim = (width, height)
-        # frame = cv2.resize(frame, dim)
+# Herschalen (lukt nog niet).
+# cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+# cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
-        # Beeld kleurconversie.
-        image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+# Frame grootte opvragen.
+frameWidth = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+frameHeight = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
-        # # Beeld spiegelen.
-        # image = cv2.flip(image, 1)
+# COM-poort openen naar de Nucleo van het m&m toestel.
+serialPort = serial.Serial('COM5', 115200)
 
-        # Detectie.
-        results = holistic.process(image)
-        # print(results)
+# Indien video beschikbaar...
+while(cap.isOpened()):
+        # Volgende frame inlezen.
+        ret, frame = cap.read()
 
-        # TODO: is dit niet overbodig?
-        # Opnieuw kleurconversie.
-        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+        # Beeld spiegelen.
+        frame = cv2.flip(frame, 1)
+        
+        # Convert the frame received from OpenCV to a MediaPipe’s Image object.
+        mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
 
-        # # Face landmarks tekenen.
-        # mp_drawing.draw_landmarks(image, results.face_landmarks, mp_holistic.FACEMESH_TESSELATION, 
-        #     mp_drawing.DrawingSpec(thickness=1, circle_radius=1),
-        #     mp_drawing.DrawingSpec(thickness=1, circle_radius=1))
-        # of
-        # Contouren van gezicht tonen.
-        # mp_drawing.draw_landmarks(image, results.face_landmarks, mp_holistic.FACEMESH_CONTOURS)
-
-        # Hand landmarks tekenen.
-        mp_drawing.draw_landmarks(image, results.right_hand_landmarks, mp_holistic.HAND_CONNECTIONS)
-        # mp_drawing.draw_landmarks(image, results.right_hand_landmarks, mp_holistic.HAND_CONNECTIONS)
-
-        if(results.right_hand_landmarks != None):
-            # print(type(results.left_hand_landmarks))
-            # print(f"pols: {results.left_hand_landmarks.landmark[0]}")
-            # print(f"Top wijsvinger: x = {results.left_hand_landmarks.landmark[8].x:.2f}, y = {results.left_hand_landmarks.landmark[8].y:.2f}.", end="\t")
-
-            polsDuim = GetVectorLength(results.right_hand_landmarks.landmark[0], results.right_hand_landmarks.landmark[4])
-            print(f"duim: {polsDuim:.2f}, ", end="   ")
-
-            polsWijsvinger = GetVectorLength(results.right_hand_landmarks.landmark[0], results.right_hand_landmarks.landmark[8])
-            print(f"wijsvinger: {polsWijsvinger:.2f}, ", end="   ")
-
-            polsMiddelvinger = GetVectorLength(results.right_hand_landmarks.landmark[0], results.right_hand_landmarks.landmark[12])
-            print(f"middelvinger: {polsMiddelvinger:.2f}, ", end="   ")
-
-            polsRingvinger = GetVectorLength(results.right_hand_landmarks.landmark[0], results.right_hand_landmarks.landmark[16])
-            print(f"ringvinger: {polsRingvinger:.2f}, ", end="   ")
-
-            polsPink = GetVectorLength(results.right_hand_landmarks.landmark[0], results.right_hand_landmarks.landmark[20])
-            print(f"pink: {polsPink:.2f}, ", end="   ")
-
-            if((polsDuim < (0.8 * polsWijsvinger)) and (polsRingvinger < (0.5 * polsWijsvinger)) and (polsPink < (0.5 * polsWijsvinger))):
-                print("ok", end="")
+        # Detectie doen op 'video'.
+        timestamp = int(cap.get(cv2.CAP_PROP_POS_MSEC))
+        gesture_recognition_result = gesture_recognizer.recognize_for_video(mp_image, timestamp)
     
-            print()
+        # Zijn er gestures gedetecteerd?
+        for gesture in gesture_recognition_result.gestures:
+            # print(gesture[0].category_name, timestamp)
+            # print()
 
+            # Is er een 'peace sign' gedetecteerd? Data verzenden naar de m&m microcontroller.
+            if gesture[0].category_name == "Victory":                
+                serialPort.write(b'm')
 
-            # # TODO: hier verder bekijken wat goed werkt.
-            # if((results.left_hand_landmarks.landmark[3].x > results.left_hand_landmarks.landmark[2].x) and (results.left_hand_landmarks.landmark[4].x > results.left_hand_landmarks.landmark[2].x)):
-            #     print("Duim open.")
-            # else:
-            #     print("Duim gesloten.")
-
-        # # Eventueel Pose tekenen (met optioneel andere kleuren).
-        # mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS, 
-        #     mp_drawing.DrawingSpec(color=(255,255,0), thickness=2, circle_radius=2),
-        #     mp_drawing.DrawingSpec(color=(255,0,0), thickness=2, circle_radius=2))
-
-        # TODO: aanraken van wijsvinger en duim detecteren? Eerst met coördinaten, later met AI?
-        # https://github.com/Kazuhito00/hand-gesture-recognition-using-mediapipe/blob/main/README_EN.md
-        # En
-        # https://www.youtube.com/watch?v=a99p_fAr6e4
-
+            # Detectie landmarks tekenen.
+            for hand_landmarks_one_hand in gesture_recognition_result.hand_landmarks:
+                for landmark in hand_landmarks_one_hand:                
+                    x = int(landmark.x * frameWidth)
+                    y = int(landmark.y * frameHeight)
+                    # print("Z: ", landmark.z)          # Geeft een indicatie van volgorde in Z-as. Groter is dichter.
+                    cv2.circle(frame, (x,y), 3, (0, 255, 0), 3)
 
         # Beeld tonen.
-        cv2.imshow("Holistic Model Detections", image)
+        cv2.imshow("Gesture recognition task with Mediapipe and OpenCV", frame)
 
+        # Wachten tot afsluiten...
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
 
-
+# Alle resources vrijgeven.
 cap.release()
 cv2.destroyAllWindows()
-
+serialPort.close()
