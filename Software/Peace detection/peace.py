@@ -11,12 +11,6 @@ import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 
-# # Hand detection maken.
-# hand_landmarker_base_options = python.BaseOptions(model_asset_path='hand_landmarker.task')
-# hand_landmarker_options = vision.HandLandmarkerOptions(base_options=hand_landmarker_base_options,
-#                                        num_hands=2)
-# hand_detector = vision.HandLandmarker.create_from_options(hand_landmarker_options)
-
 # Gesture recognizer objecten maken.
 VisionRunningMode = mp.tasks.vision.RunningMode
 gesture_recognizer_base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
@@ -24,12 +18,6 @@ gesture_recognizer_options = vision.GestureRecognizerOptions(base_options=gestur
                                         running_mode=VisionRunningMode.VIDEO,
                                         num_hands=2)
 gesture_recognizer = vision.GestureRecognizer.create_from_options(gesture_recognizer_options)
-
-# # De mogelijkheid ophalen om de detecties van MediaPipe later te tekenen via OpenCV.
-# mp_drawing = mp.solutions.drawing_utils
-
-# # Holistic model importeren.
-# mp_holistic = mp.solutions.hand
 
 # Webcam openen via OpenCV.
 cap = cv2.VideoCapture(0)
