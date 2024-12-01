@@ -81,7 +81,7 @@ while(cap.isOpened()):
                     cv2.circle(frame, (x,y), 3, (0, 255, 0), 3)
 
         # Beeld tonen.
-        cv2.imshow("Gesture recognition task with Mediapipe en OpenCV", frame)
+        cv2.imshow("Gesture recognition task with Mediapipe and OpenCV", frame)
 
         # Wachten tot afsluiten...
         if cv2.waitKey(10) & 0xFF == ord('q'):
