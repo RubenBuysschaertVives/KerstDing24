@@ -13,7 +13,9 @@ from mediapipe.tasks.python import vision
 
 # Gesture recognizer objecten maken.
 VisionRunningMode = mp.tasks.vision.RunningMode
-gesture_recognizer_base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
+# OPM: pad kan aanpassingen vereisen als je op de Raspberry Pi werkt (Windows/Linux).
+#gesture_recognizer_base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
+gesture_recognizer_base_options = python.BaseOptions(model_asset_path='Software/Peace detection/gesture_recognizer.task')
 gesture_recognizer_options = vision.GestureRecognizerOptions(base_options=gesture_recognizer_base_options,
                                         running_mode=VisionRunningMode.VIDEO,
                                         num_hands=2)
@@ -34,7 +36,8 @@ frameWidth = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 frameHeight = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
 # COM-poort openen naar de Nucleo van het m&m toestel.
-serialPort = serial.Serial('COM11', 115200)
+#serialPort = serial.Serial('COM11', 115200)
+serialPort = serial.Serial('/dev/ttyACM0', 115200)
 
 # Indien video beschikbaar...
 while(cap.isOpened()):
