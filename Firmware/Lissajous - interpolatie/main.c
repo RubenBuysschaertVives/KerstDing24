@@ -1,3 +1,5 @@
+// Defines.
+//#define MEASURE_LOOP_TIME
 // Kies een afbeelding.
 #define KERSTBOOM
 //#define VIVES
@@ -17,17 +19,20 @@ void WaitForMs(uint32_t timespan);
 void DrawLissajous(Lissajous* lissajous, uint16_t count);
 
 // Globale variabelen.
-uint16_t i = 0;
-volatile uint32_t ticks = 0;
-char text[101];
-Lissajous lissajous;
+static uint16_t i = 0;
+static volatile uint32_t ticks = 0;
+#ifdef MEASURE_LOOP_TIME
+	static uint32_t startTicks = 0, deltaTicks = 0;
+#endif
+static char text[101];
+static Lissajous lissajous;
 
 // Entry point.
 int main(void)
 {
 	// Initialisaties.
 	SystemClock_Config();
-	InitUsart2(9600);
+	InitUsart2(115200);
 	InitDAC();
 	
 	// Berichtje op de UART (optioneel).
@@ -1127,8 +1132,20 @@ int main(void)
 	
 	while (1)
 	{	
-		// Teken de volledige figuur...
+		#ifdef MEASURE_LOOP_TIME
+			// Lustijd meten (optioneel).
+			startTicks = ticks;
+		#endif
+		
+		// Teken de volledige figuur... Duurt ongeveer 15ms voor de Kerstboom (vastgesteld via meting).
 		DrawLissajous(&lissajous, lissajous.length);		
+		
+		#ifdef MEASURE_LOOP_TIME
+			// Lustijd meten (optioneel).
+			deltaTicks = ticks - startTicks;		
+			sprintf(text, "Loop time: %d ms.\r\n", deltaTicks);
+			StringToUsart2(text);
+		#endif
 	}
 }
 
