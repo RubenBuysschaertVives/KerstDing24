@@ -34,7 +34,7 @@ frameWidth = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 frameHeight = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
 # COM-poort openen naar de Nucleo van het m&m toestel.
-serialPort = serial.Serial('COM5', 115200)
+serialPort = serial.Serial('COM11', 115200)
 
 # Indien video beschikbaar...
 while(cap.isOpened()):
@@ -57,7 +57,8 @@ while(cap.isOpened()):
             # print()
 
             # Is er een 'peace sign' gedetecteerd? Data verzenden naar de m&m microcontroller.
-            if gesture[0].category_name == "Victory":                
+            if gesture[0].category_name == "Victory": 
+                print("Peace sign detected.")               
                 serialPort.write(b'm')
 
             # Detectie landmarks tekenen.
