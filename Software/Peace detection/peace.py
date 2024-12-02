@@ -11,6 +11,7 @@ import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 
+# TODO: werken met 'LIVE_STREAM' i.p.v. 'VIDEO' om zo meer real time te werken? Zie: https://ai.google.dev/edge/mediapipe/solutions/vision/gesture_recognizer/python#live-stream
 # Gesture recognizer objecten maken.
 VisionRunningMode = mp.tasks.vision.RunningMode
 # OPM: pad kan aanpassingen vereisen als je op de Raspberry Pi werkt (Windows/Linux).
