@@ -1,13 +1,25 @@
-- Raspberry Pi 4 4GB
+- Gebruik een 16GB SD-card (8GB is te weinig).
+- Gebruik een Raspberry Pi 4 4GB (minstens).
 - Raspberry Pi OS 64 bit via Raspberry Pi Imager geïnstalleerd.
-- Pi name: peacedetector
-- Gekoppeld met A118_IWT_TEMPORARY
-- SSH enabled
-- Via sudo raspi-config VNC inschakelen. Daarna Real VNC gebruiken om verbinding te maken.
+- PI-name: peacedetector
+- IP-adres (wellicht): 10.198.120.56
+- Gekoppeld met: A118_IWT_TEMPORARY
+- SSH enabled tijdens installatie met Raspberry Pi Imager.
+- Via 'sudo raspi-config' VNC inschakelen. Daarna Real VNC gebruiken om verbinding te maken.
 - Preferences -> Appearance Settings aanpassen zodat tekst groter is.
-- Visual Studio Code installeren via sudo apt install code.
-
-TODO:
-- Python packages installeren.
-- USB Camera verbinden (Logitech) en testen.
-- Nucleo-F091RC verbinden en testen.
+- Visual Studio Code installeren via 'sudo apt install code'.
+- In Visual Studio Code de Python extension installeren.
+- Via Source control in Visual Studio Code de bewuste git repo clonen.
+- Python packages installeren. Eerst een virtuele omgeving maken (verplicht).
+  De virtuele omgeving deactiveren? Gebruik volgend commando: deactivate.
+	'sudo python -m venv --system-site-packages peacedetector'
+	'source peacedetector/bin/activate'
+	'pip list'
+	'pip install mediapipe'
+	'pip install pyserial'
+	'pip install opencv-python'
+- Selecteer in Visual Studio Code de juiste virtuele omgeving. 
+	Die heet peacedetector en staat wellicht in map: /home/pi/peacedetector/bin.
+- USB Camera verbinden (Logitech) en testen via Python code met OpenCV.
+- Nucleo-F091RC verbinden en testen. COM-poortnaam vinden via 'ls -l /sys/class/tty'.
+	Naam in Python code is (wellicht): /dev/ttyACM0.
