@@ -1,0 +1,13 @@
+- Raspberry Pi 4 4GB
+- Raspberry Pi OS 64 bit via Raspberry Pi Imager geïnstalleerd.
+- Pi name: peacedetector
+- Gekoppeld met A118_IWT_TEMPORARY
+- SSH enabled
+- Via sudo raspi-config VNC inschakelen. Daarna Real VNC gebruiken om verbinding te maken.
+- Preferences -> Appearance Settings aanpassen zodat tekst groter is.
+- Visual Studio Code installeren via sudo apt install code.
+
+TODO:
+- Python packages installeren.
+- USB Camera verbinden (Logitech) en testen.
+- Nucleo-F091RC verbinden en testen.
