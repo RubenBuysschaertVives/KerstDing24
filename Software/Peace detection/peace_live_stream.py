@@ -19,8 +19,8 @@ result = None
 busy = False
 
 # COM-poort openen naar de Nucleo van het m&m toestel.
-serialPort = serial.Serial('COM5', 115200)
-# serialPort = serial.Serial('/dev/ttyACM0', 115200)
+# serialPort = serial.Serial('COM5', 115200)
+serialPort = serial.Serial('/dev/ttyACM0', 115200)
 
 # Webcam openen via OpenCV.
 cap = cv2.VideoCapture(0)
@@ -56,8 +56,8 @@ def detection_callback(gesture_recognition_result, output_image, timestamp_ms):
 # Gesture recognizer objecten maken.
 VisionRunningMode = mp.tasks.vision.RunningMode
 # OPM: pad kan aanpassingen vereisen als je op de Raspberry Pi werkt (Windows/Linux).
-gesture_recognizer_base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
-# gesture_recognizer_base_options = python.BaseOptions(model_asset_path='Software/Peace detection/gesture_recognizer.task')
+# gesture_recognizer_base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
+gesture_recognizer_base_options = python.BaseOptions(model_asset_path='Software/Peace detection/gesture_recognizer.task')
 gesture_recognizer_options = vision.GestureRecognizerOptions(base_options=gesture_recognizer_base_options,
                                         running_mode=VisionRunningMode.LIVE_STREAM,
                                         num_hands=2,
