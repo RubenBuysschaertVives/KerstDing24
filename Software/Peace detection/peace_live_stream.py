@@ -24,7 +24,7 @@ busy = False
 last_peace_detection = 0
 
 # COM-poort openen naar de Nucleo van het m&m toestel.
-serial_port = serial.Serial('COM11', 115200)
+serial_port = serial.Serial('COM8', 115200)
 # serialPort = serial.Serial('/dev/ttyACM0', 115200)
 
 # Webcam openen via OpenCV.
@@ -33,6 +33,20 @@ capture = cv2.VideoCapture(0)
 # Frame grootte opvragen.
 frame_width = capture.get(cv2.CAP_PROP_FRAME_WIDTH)
 frame_height = capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
+
+# Dichtste hand zoeken.
+def find_closest_hand(result):        
+    closest_z = 0
+    closest_hand_index = 0
+    for hand_index in range(len(result.hand_landmarks)):
+        z_value = result.hand_landmarks[hand_index][0].z
+        # print(f"hand_index: {hand_index}, z-value: {z_value}.")
+        if z_value > closest_z:
+            closest_z = z_value
+            closest_hand_index = hand_index
+    # print(f"closest_hand_index: {closest_hand_index}.")
+            
+    return closest_hand_index
 
 # Maak een 'gesture recognizer instance' voor live stream mode.
 def detection_callback(gesture_recognition_result, output_image, timestamp_ms):
@@ -44,13 +58,15 @@ def detection_callback(gesture_recognition_result, output_image, timestamp_ms):
     global result 
     result = gesture_recognition_result
 
-    # Zijn er gestures gedetecteerd?
-    for gesture in gesture_recognition_result.gestures:
-        # print(gesture[0].category_name, timestamp)
-        # print()
+    # Index van de dichtste hand zoeken.
+    closest_hand_index = find_closest_hand(result)
 
-        # Is er een 'peace sign' gedetecteerd en is de wachttijd voorbij? Data verzenden naar de m&m microcontroller.
-        if gesture[0].category_name == "Victory": 
+    # Dichtste hand tonen (als die er is).
+    if (len(result.hand_landmarks) > 0) and (len(result.gestures) > 0):
+        # Is er een 'peace sign' gedetecteerd op de dichtste hand en is de wachttijd voorbij?
+        # Data verzenden naar de m&m microcontroller.
+        # TODO: soms wordt toch de verkeerde hand geselecteer...
+        if result.gestures[closest_hand_index][0].category_name == "Victory": 
             print("Peace sign detected.", timestamp)
             if(time.time() > last_peace_detection + M_AND_M_DELAY):        
                 serial_port.write(b'm')
@@ -68,7 +84,7 @@ gesture_recognizer_base_options = python.BaseOptions(model_asset_path='gesture_r
 # gesture_recognizer_base_options = python.BaseOptions(model_asset_path='Software/Peace detection/gesture_recognizer.task')
 gesture_recognizer_options = vision.GestureRecognizerOptions(base_options=gesture_recognizer_base_options,
                                         running_mode=mp.tasks.vision.RunningMode.LIVE_STREAM,
-                                        num_hands=2,
+                                        num_hands=8,
                                         result_callback=detection_callback)
 gesture_recognizer = vision.GestureRecognizer.create_from_options(gesture_recognizer_options)
 
@@ -92,16 +108,7 @@ while(capture.isOpened()):
     # Detectie landmarks tekenen als er gevonden werden.
     if result != None: 
         # Dichtste hand zoeken.
-        # TODO: enkel m&m aanvragen bij dichtste hand.
-        closest_z = 0
-        closest_hand_index = 0
-        for hand_index in range(len(result.hand_landmarks)):
-            z_value = result.hand_landmarks[hand_index][0].z
-            # print(f"hand_index: {hand_index}, z-value: {z_value}.")
-            if z_value > closest_z:
-                closest_z = z_value
-                closest_hand_index = hand_index
-        # print(f"closest_hand_index: {closest_hand_index}.")
+        closest_hand_index = find_closest_hand(result)
 
         # Dichtste hand tonen.
         if len(result.hand_landmarks) > 0:
