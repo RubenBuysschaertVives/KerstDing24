@@ -24,8 +24,8 @@ busy = False
 last_peace_detection = 0
 
 # COM-poort openen naar de Nucleo van het m&m toestel.
-serial_port = serial.Serial('COM8', 115200)
-# serialPort = serial.Serial('/dev/ttyACM0', 115200)
+#serial_port = serial.Serial('COM8', 115200)
+serial_port = serial.Serial('/dev/ttyACM0', 115200)
 
 # Webcam openen via OpenCV.
 capture = cv2.VideoCapture(0)
@@ -44,7 +44,7 @@ def find_closest_hand(result):
         if z_value > closest_z:
             closest_z = z_value
             closest_hand_index = hand_index
-    # print(f"closest_hand_index: {closest_hand_index}.")
+    print(f"closest_hand_index: {closest_hand_index}.")
             
     return closest_hand_index
 
@@ -80,8 +80,8 @@ def detection_callback(gesture_recognition_result, output_image, timestamp_ms):
 # Zie: https://ai.google.dev/edge/mediapipe/solutions/vision/gesture_recognizer/python#live-stream
 # Gesture recognizer objecten maken.
 # OPM: pad kan aanpassingen vereisen als je op de Raspberry Pi werkt (Windows/Linux).
-gesture_recognizer_base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
-# gesture_recognizer_base_options = python.BaseOptions(model_asset_path='Software/Peace detection/gesture_recognizer.task')
+#gesture_recognizer_base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
+gesture_recognizer_base_options = python.BaseOptions(model_asset_path='Software/Peace detection/gesture_recognizer.task')
 gesture_recognizer_options = vision.GestureRecognizerOptions(base_options=gesture_recognizer_base_options,
                                         running_mode=mp.tasks.vision.RunningMode.LIVE_STREAM,
                                         num_hands=8,
@@ -111,7 +111,7 @@ while(capture.isOpened()):
         closest_hand_index = find_closest_hand(result)
 
         # Dichtste hand tonen.
-        if len(result.hand_landmarks) > 0:
+        if len(result.hand_landmarks) >= closest_hand_index:
             hand_landmarks_one_hand = result.hand_landmarks[closest_hand_index]
             for landmark in hand_landmarks_one_hand:                
                 x = int(landmark.x * frame_width)
