@@ -90,8 +90,22 @@ while(capture.isOpened()):
     busy = True
 
     # Detectie landmarks tekenen als er gevonden werden.
-    if result != None:
-        for hand_landmarks_one_hand in result.hand_landmarks:
+    if result != None: 
+        # Dichtste hand zoeken.
+        # TODO: enkel m&m aanvragen bij dichtste hand.
+        closest_z = 0
+        closest_hand_index = 0
+        for hand_index in range(len(result.hand_landmarks)):
+            z_value = result.hand_landmarks[hand_index][0].z
+            # print(f"hand_index: {hand_index}, z-value: {z_value}.")
+            if z_value > closest_z:
+                closest_z = z_value
+                closest_hand_index = hand_index
+        # print(f"closest_hand_index: {closest_hand_index}.")
+
+        # Dichtste hand tonen.
+        if len(result.hand_landmarks) > 0:
+            hand_landmarks_one_hand = result.hand_landmarks[closest_hand_index]
             for landmark in hand_landmarks_one_hand:                
                 x = int(landmark.x * frame_width)
                 y = int(landmark.y * frame_height)
