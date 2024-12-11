@@ -1,14 +1,23 @@
-# Deze code werkt 'asynchroon' (LIVE_STREAM mode) en daardoor is het mogelijk om met minder rekenkracht, toch 
-# een vlottere ervaring te creëren (in tegenstelling tot peace_video.py).
+# Code die via OpenCV en MediaPipe op zoek gaat naar 'handen die het vredesteken' maken.
+# Als er een 'peace sign' is, wordt er verzoek gestuurd naar een microcontroller om een m&m
+# af te leveren. Het verzoek wordt via de seriële poort verstuurd.
+# 
+# De code maakt deel uit van het 'KerstDing24'...
+# 
+# Meer info: R.Buysschaert
 
-# https://ai.google.dev/edge/mediapipe/solutions/vision/gesture_recognizer/index
+# Deze code werkt 'asynchroon' (LIVE_STREAM mode) en daardoor is het mogelijk om met minder rekenkracht, toch 
+# een vlottere ervaring te creëren (in tegenstelling tot peace_video.py). Je kan dit programma laten werken
+# op een Raspberry Pi 4 bijvoorbeeld.
+
+# Inspiratielink: https://ai.google.dev/edge/mediapipe/solutions/vision/gesture_recognizer/index
 # Codevoorbeeld via: https://colab.research.google.com/github/googlesamples/mediapipe/blob/main/examples/gesture_recognizer/python/gesture_recognizer.ipynb#scrollTo=OMjuVQiDYJKF
 # Model via: https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task
 
 import urllib
 import cv2
 import mediapipe as mp
-import serial       # pip install pyserial uitvoeren vooraf.
+import serial                                       # pip install pyserial uitvoeren vooraf.
 import math
 import mediapipe as mp
 from mediapipe.tasks import python
@@ -21,11 +30,11 @@ M_AND_M_DELAY = 9
 # Globale variabelen.
 result = None
 busy = False
-last_peace_detection = 0
+last_peace_sign_detection = 0
 
 # COM-poort openen naar de Nucleo van het m&m toestel.
-#serial_port = serial.Serial('COM8', 115200)
-serial_port = serial.Serial('/dev/ttyACM0', 115200)
+serial_port = serial.Serial('COM8', 115200)
+# serial_port = serial.Serial('/dev/ttyACM0', 115200)
 
 # Webcam openen via OpenCV.
 capture = cv2.VideoCapture(0)
@@ -44,7 +53,7 @@ def find_closest_hand(result):
         if z_value > closest_z:
             closest_z = z_value
             closest_hand_index = hand_index
-    print(f"closest_hand_index: {closest_hand_index}.")
+    # print(f"closest_hand_index: {closest_hand_index}.")
             
     return closest_hand_index
 
@@ -52,7 +61,7 @@ def find_closest_hand(result):
 def detection_callback(gesture_recognition_result, output_image, timestamp_ms):
     # Globale busy variabele ophalen.
     global busy
-    global last_peace_detection
+    global last_peace_sign_detection
 
     # Resultaat globaal beschikbaar stellen.
     global result 
@@ -67,10 +76,12 @@ def detection_callback(gesture_recognition_result, output_image, timestamp_ms):
         # Data verzenden naar de m&m microcontroller.
         if result.gestures[closest_hand_index][0].category_name == "Victory": 
             print("Peace sign detected.", timestamp)
-            if(time.time() > last_peace_detection + M_AND_M_DELAY):        
+            # Wachttijd voorbij?
+            if(time.time() > (last_peace_sign_detection + M_AND_M_DELAY)):        
                 serial_port.write(b'm')
                 print("m&m request sent to microcontroller.")
-                last_peace_detection = time.time()
+                # Nieuwe tijd opslaan.
+                last_peace_sign_detection = time.time()
 
     # Aangeven dat de verwerking voorbij is (en een nieuwe mag beginnen in de 'hoofdlus').
     busy = False
@@ -79,11 +90,11 @@ def detection_callback(gesture_recognition_result, output_image, timestamp_ms):
 # Zie: https://ai.google.dev/edge/mediapipe/solutions/vision/gesture_recognizer/python#live-stream
 # Gesture recognizer objecten maken.
 # OPM: pad kan aanpassingen vereisen als je op de Raspberry Pi werkt (Windows/Linux).
-#gesture_recognizer_base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
-gesture_recognizer_base_options = python.BaseOptions(model_asset_path='Software/Peace detection/gesture_recognizer.task')
+gesture_recognizer_base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
+# gesture_recognizer_base_options = python.BaseOptions(model_asset_path='Software/Peace detection/gesture_recognizer.task')
 gesture_recognizer_options = vision.GestureRecognizerOptions(base_options=gesture_recognizer_base_options,
                                         running_mode=mp.tasks.vision.RunningMode.LIVE_STREAM,
-                                        num_hands=8,
+                                        num_hands=4,
                                         result_callback=detection_callback)
 gesture_recognizer = vision.GestureRecognizer.create_from_options(gesture_recognizer_options)
 
@@ -109,16 +120,16 @@ while(capture.isOpened()):
         # Dichtste hand zoeken.
         closest_hand_index = find_closest_hand(result)
 
-        # Dichtste hand tonen.
-        if len(result.hand_landmarks) >= closest_hand_index:
-            hand_landmarks_one_hand = result.hand_landmarks[closest_hand_index]
-            for landmark in hand_landmarks_one_hand:                
+        # Dichtste hand tonen indien mogelijk.
+        if (len(result.hand_landmarks) > closest_hand_index):
+            hand_landmarks_closest_hand = result.hand_landmarks[closest_hand_index]
+            for landmark in hand_landmarks_closest_hand:
                 x = int(landmark.x * frame_width)
                 y = int(landmark.y * frame_height)
                 # Z geeft een indicatie van volgorde in Z-as. Groter is dichter bij de camera.
                 # print("Z: ", landmark.z)
 
-                if(time.time() > last_peace_detection + M_AND_M_DELAY):
+                if(time.time() > last_peace_sign_detection + M_AND_M_DELAY):
                     # Groene cirkels tekenen als het langer dan 10 seconden geleden is dat er een m&m werd afgeleverd.
                     cv2.circle(frame, (x,y), 3, (0, 255, 0), 3)
                 else:
@@ -126,7 +137,7 @@ while(capture.isOpened()):
                     cv2.circle(frame, (x,y), 3, (0, 0, 255), 3)
 
     # Berekenen hoe lang het nog duurt vooraleer er een nieuw m&m mag uitgedeeld worden.
-    waiting_time = last_peace_detection + M_AND_M_DELAY - time.time()
+    waiting_time = last_peace_sign_detection + M_AND_M_DELAY - time.time()
     # Is de wachttijd voorbij? Toon nul in het groen. Anders de resterende seconden in het rood.
     if waiting_time < 0:
         waiting_time = 0
@@ -135,7 +146,7 @@ while(capture.isOpened()):
         waiting_time_color = (0,0,255)      # Rood.
     cv2.putText(frame, f"{waiting_time:.1f}", org=(int(frame_width - 70), int(frame_height - 30)), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=waiting_time_color, thickness=4)
     # Beeld tonen.
-    cv2.imshow("Gesture recognition with Mediapipe and OpenCV", frame)
+    cv2.imshow("'Peace sign' recognition with Mediapipe and OpenCV", frame)
 
     # Wachten tot afsluiten...
     if cv2.waitKey(10) & 0xFF == ord('q'):
