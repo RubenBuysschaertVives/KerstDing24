@@ -65,7 +65,6 @@ def detection_callback(gesture_recognition_result, output_image, timestamp_ms):
     if (len(result.hand_landmarks) > 0) and (len(result.gestures) > 0):
         # Is er een 'peace sign' gedetecteerd op de dichtste hand en is de wachttijd voorbij?
         # Data verzenden naar de m&m microcontroller.
-        # TODO: soms wordt toch de verkeerde hand geselecteer...
         if result.gestures[closest_hand_index][0].category_name == "Victory": 
             print("Peace sign detected.", timestamp)
             if(time.time() > last_peace_detection + M_AND_M_DELAY):        
