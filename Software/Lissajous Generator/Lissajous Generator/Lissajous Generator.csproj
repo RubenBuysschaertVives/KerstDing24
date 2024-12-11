@@ -96,6 +96,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="peace.png" />
     <Resource Include="vivesballon512.png" />
   </ItemGroup>
   <ItemGroup>

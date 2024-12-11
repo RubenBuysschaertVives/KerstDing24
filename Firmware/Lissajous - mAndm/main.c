@@ -1,9 +1,7 @@
 // Defines.
 //#define MEASURE_LOOP_TIME
-// Kies een afbeelding.
-#define KERSTBOOM
-//#define VIVES
-//#define RECTANGLE
+#define XMASTREE
+#define RECTANGLE
 #define PEACE
 
 #define SERVO_JUST_BELOW_MIDPOINT 1450			// Normaal middelpunt is 1500/2000. Doe daar een kleinigheid af zodat je later kan bijregelen met de on board potentiometer.
@@ -28,7 +26,6 @@
 // Functie prototypes aanmaken.
 void SystemClock_Config(void);
 void WaitForMs(uint32_t timespan);
-void DrawLissajous(Lissajous* lissajousXmas, uint16_t count);
 
 // Globale variabelen.
 static uint16_t i = 0;
@@ -38,8 +35,8 @@ static volatile uint32_t ticks = 0;
 #endif
 static char text[101];
 static Lissajous lissajousXmas, lissajousRectangle, lissajousPeace;
-static bool IR1Help = false, run = false, sw1Help = false;
-static uint16_t count = 0, wannabeTimer = 0;
+static bool IR1Help = false, runMotor = false, sw1Help = false;
+static uint16_t mAndMsDelivered = 0, wannabeTimer = 0;
 static uint16_t adValue = 0;
 
 // Entry point.
@@ -66,7 +63,7 @@ int main(void)
 	SetPwm(SERVO_JUST_BELOW_MIDPOINT + adValue);
 	
 	// Berichtje op de UART (optioneel).
-	sprintf(text, "KerstDing24 - Lissajous figuren via DAC's en m&m op een Nucleo-F091RC.\r\n");
+	sprintf(text, "KerstDing24 - Lissajous figuren en m&m met een Nucleo-F091RC.\r\n");
 	StringToUsart2(text);
 	
 	// Analoge spanningen op nul volt zetten.
@@ -83,10 +80,14 @@ int main(void)
 		lissajousRectangle.points[i].x = 0;
 		lissajousRectangle.points[i].y = 0;
 		lissajousRectangle.points[i].suppressPreviousTrack = false;
+		
+		lissajousPeace.points[i].x = 0;
+		lissajousPeace.points[i].y = 0;
+		lissajousPeace.points[i].suppressPreviousTrack = false;
 	}
 
 	// Data opvullen.
-	#ifdef KERSTBOOM
+	#ifdef XMASTREE
 	{
 		lissajousXmas.points[0].x = 1850;
 		lissajousXmas.points[0].y = 421;
@@ -642,502 +643,6 @@ int main(void)
 	}
 	#endif
 	
-	#ifdef VIVES
-	{
-		lissajousXmas.points[0].x = 296;
-		lissajousXmas.points[0].y = 1667;
-		lissajousXmas.points[0].suppressPreviousTrack = false;
-
-		lissajousXmas.points[1].x = 21;
-		lissajousXmas.points[1].y = 2442;
-		lissajousXmas.points[1].suppressPreviousTrack = false;
-
-		lissajousXmas.points[2].x = 251;
-		lissajousXmas.points[2].y = 2442;
-		lissajousXmas.points[2].suppressPreviousTrack = false;
-
-		lissajousXmas.points[3].x = 437;
-		lissajousXmas.points[3].y = 1917;
-		lissajousXmas.points[3].suppressPreviousTrack = false;
-
-		lissajousXmas.points[4].x = 616;
-		lissajousXmas.points[4].y = 2442;
-		lissajousXmas.points[4].suppressPreviousTrack = false;
-
-		lissajousXmas.points[5].x = 866;
-		lissajousXmas.points[5].y = 2435;
-		lissajousXmas.points[5].suppressPreviousTrack = false;
-
-		lissajousXmas.points[6].x = 578;
-		lissajousXmas.points[6].y = 1674;
-		lissajousXmas.points[6].suppressPreviousTrack = false;
-
-		lissajousXmas.points[7].x = 296;
-		lissajousXmas.points[7].y = 1674;
-		lissajousXmas.points[7].suppressPreviousTrack = false;
-
-		lissajousXmas.points[8].x = 923;
-		lissajousXmas.points[8].y = 1693;
-		lissajousXmas.points[8].suppressPreviousTrack = true;
-
-		lissajousXmas.points[9].x = 930;
-		lissajousXmas.points[9].y = 2435;
-		lissajousXmas.points[9].suppressPreviousTrack = false;
-
-		lissajousXmas.points[10].x = 1154;
-		lissajousXmas.points[10].y = 2442;
-		lissajousXmas.points[10].suppressPreviousTrack = false;
-
-		lissajousXmas.points[11].x = 1166;
-		lissajousXmas.points[11].y = 1674;
-		lissajousXmas.points[11].suppressPreviousTrack = false;
-
-		lissajousXmas.points[12].x = 923;
-		lissajousXmas.points[12].y = 1667;
-		lissajousXmas.points[12].suppressPreviousTrack = false;
-
-		lissajousXmas.points[13].x = 1499;
-		lissajousXmas.points[13].y = 1667;
-		lissajousXmas.points[13].suppressPreviousTrack = true;
-
-		lissajousXmas.points[14].x = 1224;
-		lissajousXmas.points[14].y = 2435;
-		lissajousXmas.points[14].suppressPreviousTrack = false;
-
-		lissajousXmas.points[15].x = 1474;
-		lissajousXmas.points[15].y = 2442;
-		lissajousXmas.points[15].suppressPreviousTrack = false;
-
-		lissajousXmas.points[16].x = 1646;
-		lissajousXmas.points[16].y = 1904;
-		lissajousXmas.points[16].suppressPreviousTrack = false;
-
-		lissajousXmas.points[17].x = 1813;
-		lissajousXmas.points[17].y = 2435;
-		lissajousXmas.points[17].suppressPreviousTrack = false;
-
-		lissajousXmas.points[18].x = 2056;
-		lissajousXmas.points[18].y = 2442;
-		lissajousXmas.points[18].suppressPreviousTrack = false;
-
-		lissajousXmas.points[19].x = 1800;
-		lissajousXmas.points[19].y = 1680;
-		lissajousXmas.points[19].suppressPreviousTrack = false;
-
-		lissajousXmas.points[20].x = 1493;
-		lissajousXmas.points[20].y = 1667;
-		lissajousXmas.points[20].suppressPreviousTrack = false;
-
-		lissajousXmas.points[21].x = 2843;
-		lissajousXmas.points[21].y = 1923;
-		lissajousXmas.points[21].suppressPreviousTrack = true;
-
-		lissajousXmas.points[22].x = 2606;
-		lissajousXmas.points[22].y = 1930;
-		lissajousXmas.points[22].suppressPreviousTrack = false;
-
-		lissajousXmas.points[23].x = 2587;
-		lissajousXmas.points[23].y = 1917;
-		lissajousXmas.points[23].suppressPreviousTrack = false;
-
-		lissajousXmas.points[24].x = 2562;
-		lissajousXmas.points[24].y = 1891;
-		lissajousXmas.points[24].suppressPreviousTrack = false;
-
-		lissajousXmas.points[25].x = 2510;
-		lissajousXmas.points[25].y = 1866;
-		lissajousXmas.points[25].suppressPreviousTrack = false;
-
-		lissajousXmas.points[26].x = 2434;
-		lissajousXmas.points[26].y = 1853;
-		lissajousXmas.points[26].suppressPreviousTrack = false;
-
-		lissajousXmas.points[27].x = 2382;
-		lissajousXmas.points[27].y = 1872;
-		lissajousXmas.points[27].suppressPreviousTrack = false;
-
-		lissajousXmas.points[28].x = 2338;
-		lissajousXmas.points[28].y = 1910;
-		lissajousXmas.points[28].suppressPreviousTrack = false;
-
-		lissajousXmas.points[29].x = 2318;
-		lissajousXmas.points[29].y = 1942;
-		lissajousXmas.points[29].suppressPreviousTrack = false;
-
-		lissajousXmas.points[30].x = 2318;
-		lissajousXmas.points[30].y = 1994;
-		lissajousXmas.points[30].suppressPreviousTrack = false;
-
-		lissajousXmas.points[31].x = 2862;
-		lissajousXmas.points[31].y = 1994;
-		lissajousXmas.points[31].suppressPreviousTrack = false;
-
-		lissajousXmas.points[32].x = 2869;
-		lissajousXmas.points[32].y = 2058;
-		lissajousXmas.points[32].suppressPreviousTrack = false;
-
-		lissajousXmas.points[33].x = 2869;
-		lissajousXmas.points[33].y = 2109;
-		lissajousXmas.points[33].suppressPreviousTrack = false;
-
-		lissajousXmas.points[34].x = 2862;
-		lissajousXmas.points[34].y = 2179;
-		lissajousXmas.points[34].suppressPreviousTrack = false;
-
-		lissajousXmas.points[35].x = 2830;
-		lissajousXmas.points[35].y = 2243;
-		lissajousXmas.points[35].suppressPreviousTrack = false;
-
-		lissajousXmas.points[36].x = 2798;
-		lissajousXmas.points[36].y = 2301;
-		lissajousXmas.points[36].suppressPreviousTrack = false;
-
-		lissajousXmas.points[37].x = 2734;
-		lissajousXmas.points[37].y = 2358;
-		lissajousXmas.points[37].suppressPreviousTrack = false;
-
-		lissajousXmas.points[38].x = 2645;
-		lissajousXmas.points[38].y = 2429;
-		lissajousXmas.points[38].suppressPreviousTrack = false;
-
-		lissajousXmas.points[39].x = 2555;
-		lissajousXmas.points[39].y = 2448;
-		lissajousXmas.points[39].suppressPreviousTrack = false;
-
-		lissajousXmas.points[40].x = 2498;
-		lissajousXmas.points[40].y = 2461;
-		lissajousXmas.points[40].suppressPreviousTrack = false;
-
-		lissajousXmas.points[41].x = 2395;
-		lissajousXmas.points[41].y = 2461;
-		lissajousXmas.points[41].suppressPreviousTrack = false;
-
-		lissajousXmas.points[42].x = 2331;
-		lissajousXmas.points[42].y = 2435;
-		lissajousXmas.points[42].suppressPreviousTrack = false;
-
-		lissajousXmas.points[43].x = 2261;
-		lissajousXmas.points[43].y = 2403;
-		lissajousXmas.points[43].suppressPreviousTrack = false;
-
-		lissajousXmas.points[44].x = 2203;
-		lissajousXmas.points[44].y = 2365;
-		lissajousXmas.points[44].suppressPreviousTrack = false;
-
-		lissajousXmas.points[45].x = 2152;
-		lissajousXmas.points[45].y = 2314;
-		lissajousXmas.points[45].suppressPreviousTrack = false;
-
-		lissajousXmas.points[46].x = 2101;
-		lissajousXmas.points[46].y = 2218;
-		lissajousXmas.points[46].suppressPreviousTrack = false;
-
-		lissajousXmas.points[47].x = 2082;
-		lissajousXmas.points[47].y = 2122;
-		lissajousXmas.points[47].suppressPreviousTrack = false;
-
-		lissajousXmas.points[48].x = 2082;
-		lissajousXmas.points[48].y = 2006;
-		lissajousXmas.points[48].suppressPreviousTrack = false;
-
-		lissajousXmas.points[49].x = 2114;
-		lissajousXmas.points[49].y = 1878;
-		lissajousXmas.points[49].suppressPreviousTrack = false;
-
-		lissajousXmas.points[50].x = 2165;
-		lissajousXmas.points[50].y = 1814;
-		lissajousXmas.points[50].suppressPreviousTrack = false;
-
-		lissajousXmas.points[51].x = 2229;
-		lissajousXmas.points[51].y = 1763;
-		lissajousXmas.points[51].suppressPreviousTrack = false;
-
-		lissajousXmas.points[52].x = 2306;
-		lissajousXmas.points[52].y = 1712;
-		lissajousXmas.points[52].suppressPreviousTrack = false;
-
-		lissajousXmas.points[53].x = 2389;
-		lissajousXmas.points[53].y = 1680;
-		lissajousXmas.points[53].suppressPreviousTrack = false;
-
-		lissajousXmas.points[54].x = 2466;
-		lissajousXmas.points[54].y = 1661;
-		lissajousXmas.points[54].suppressPreviousTrack = false;
-
-		lissajousXmas.points[55].x = 2555;
-		lissajousXmas.points[55].y = 1661;
-		lissajousXmas.points[55].suppressPreviousTrack = false;
-
-		lissajousXmas.points[56].x = 2626;
-		lissajousXmas.points[56].y = 1667;
-		lissajousXmas.points[56].suppressPreviousTrack = false;
-
-		lissajousXmas.points[57].x = 2709;
-		lissajousXmas.points[57].y = 1712;
-		lissajousXmas.points[57].suppressPreviousTrack = false;
-
-		lissajousXmas.points[58].x = 2773;
-		lissajousXmas.points[58].y = 1763;
-		lissajousXmas.points[58].suppressPreviousTrack = false;
-
-		lissajousXmas.points[59].x = 2824;
-		lissajousXmas.points[59].y = 1859;
-		lissajousXmas.points[59].suppressPreviousTrack = false;
-
-		lissajousXmas.points[60].x = 2837;
-		lissajousXmas.points[60].y = 1917;
-		lissajousXmas.points[60].suppressPreviousTrack = false;
-
-		lissajousXmas.points[61].x = 2626;
-		lissajousXmas.points[61].y = 2147;
-		lissajousXmas.points[61].suppressPreviousTrack = true;
-
-		lissajousXmas.points[62].x = 2331;
-		lissajousXmas.points[62].y = 2179;
-		lissajousXmas.points[62].suppressPreviousTrack = false;
-
-		lissajousXmas.points[63].x = 2350;
-		lissajousXmas.points[63].y = 2224;
-		lissajousXmas.points[63].suppressPreviousTrack = false;
-
-		lissajousXmas.points[64].x = 2421;
-		lissajousXmas.points[64].y = 2262;
-		lissajousXmas.points[64].suppressPreviousTrack = false;
-
-		lissajousXmas.points[65].x = 2485;
-		lissajousXmas.points[65].y = 2262;
-		lissajousXmas.points[65].suppressPreviousTrack = false;
-
-		lissajousXmas.points[66].x = 2594;
-		lissajousXmas.points[66].y = 2205;
-		lissajousXmas.points[66].suppressPreviousTrack = false;
-
-		lissajousXmas.points[67].x = 2606;
-		lissajousXmas.points[67].y = 2166;
-		lissajousXmas.points[67].suppressPreviousTrack = false;
-
-		lissajousXmas.points[68].x = 2619;
-		lissajousXmas.points[68].y = 2122;
-		lissajousXmas.points[68].suppressPreviousTrack = false;
-
-		lissajousXmas.points[69].x = 2907;
-		lissajousXmas.points[69].y = 1923;
-		lissajousXmas.points[69].suppressPreviousTrack = true;
-
-		lissajousXmas.points[70].x = 3144;
-		lissajousXmas.points[70].y = 1923;
-		lissajousXmas.points[70].suppressPreviousTrack = false;
-
-		lissajousXmas.points[71].x = 3163;
-		lissajousXmas.points[71].y = 1878;
-		lissajousXmas.points[71].suppressPreviousTrack = false;
-
-		lissajousXmas.points[72].x = 3214;
-		lissajousXmas.points[72].y = 1840;
-		lissajousXmas.points[72].suppressPreviousTrack = false;
-
-		lissajousXmas.points[73].x = 3272;
-		lissajousXmas.points[73].y = 1834;
-		lissajousXmas.points[73].suppressPreviousTrack = false;
-
-		lissajousXmas.points[74].x = 3330;
-		lissajousXmas.points[74].y = 1846;
-		lissajousXmas.points[74].suppressPreviousTrack = false;
-
-		lissajousXmas.points[75].x = 3368;
-		lissajousXmas.points[75].y = 1891;
-		lissajousXmas.points[75].suppressPreviousTrack = false;
-
-		lissajousXmas.points[76].x = 3355;
-		lissajousXmas.points[76].y = 1949;
-		lissajousXmas.points[76].suppressPreviousTrack = false;
-
-		lissajousXmas.points[77].x = 3310;
-		lissajousXmas.points[77].y = 1968;
-		lissajousXmas.points[77].suppressPreviousTrack = false;
-
-		lissajousXmas.points[78].x = 3144;
-		lissajousXmas.points[78].y = 2013;
-		lissajousXmas.points[78].suppressPreviousTrack = false;
-
-		lissajousXmas.points[79].x = 3048;
-		lissajousXmas.points[79].y = 2038;
-		lissajousXmas.points[79].suppressPreviousTrack = false;
-
-		lissajousXmas.points[80].x = 2978;
-		lissajousXmas.points[80].y = 2070;
-		lissajousXmas.points[80].suppressPreviousTrack = false;
-
-		lissajousXmas.points[81].x = 2926;
-		lissajousXmas.points[81].y = 2179;
-		lissajousXmas.points[81].suppressPreviousTrack = false;
-
-		lissajousXmas.points[82].x = 2958;
-		lissajousXmas.points[82].y = 2320;
-		lissajousXmas.points[82].suppressPreviousTrack = false;
-
-		lissajousXmas.points[83].x = 3010;
-		lissajousXmas.points[83].y = 2384;
-		lissajousXmas.points[83].suppressPreviousTrack = false;
-
-		lissajousXmas.points[84].x = 3054;
-		lissajousXmas.points[84].y = 2410;
-		lissajousXmas.points[84].suppressPreviousTrack = false;
-
-		lissajousXmas.points[85].x = 3125;
-		lissajousXmas.points[85].y = 2435;
-		lissajousXmas.points[85].suppressPreviousTrack = false;
-
-		lissajousXmas.points[86].x = 3221;
-		lissajousXmas.points[86].y = 2448;
-		lissajousXmas.points[86].suppressPreviousTrack = false;
-
-		lissajousXmas.points[87].x = 3291;
-		lissajousXmas.points[87].y = 2448;
-		lissajousXmas.points[87].suppressPreviousTrack = false;
-
-		lissajousXmas.points[88].x = 3368;
-		lissajousXmas.points[88].y = 2435;
-		lissajousXmas.points[88].suppressPreviousTrack = false;
-
-		lissajousXmas.points[89].x = 3426;
-		lissajousXmas.points[89].y = 2422;
-		lissajousXmas.points[89].suppressPreviousTrack = false;
-
-		lissajousXmas.points[90].x = 3490;
-		lissajousXmas.points[90].y = 2378;
-		lissajousXmas.points[90].suppressPreviousTrack = false;
-
-		lissajousXmas.points[91].x = 3515;
-		lissajousXmas.points[91].y = 2339;
-		lissajousXmas.points[91].suppressPreviousTrack = false;
-
-		lissajousXmas.points[92].x = 3547;
-		lissajousXmas.points[92].y = 2282;
-		lissajousXmas.points[92].suppressPreviousTrack = false;
-
-		lissajousXmas.points[93].x = 3573;
-		lissajousXmas.points[93].y = 2211;
-		lissajousXmas.points[93].suppressPreviousTrack = false;
-
-		lissajousXmas.points[94].x = 3573;
-		lissajousXmas.points[94].y = 2192;
-		lissajousXmas.points[94].suppressPreviousTrack = false;
-
-		lissajousXmas.points[95].x = 3368;
-		lissajousXmas.points[95].y = 2173;
-		lissajousXmas.points[95].suppressPreviousTrack = false;
-
-		lissajousXmas.points[96].x = 3355;
-		lissajousXmas.points[96].y = 2205;
-		lissajousXmas.points[96].suppressPreviousTrack = false;
-
-		lissajousXmas.points[97].x = 3317;
-		lissajousXmas.points[97].y = 2256;
-		lissajousXmas.points[97].suppressPreviousTrack = false;
-
-		lissajousXmas.points[98].x = 3310;
-		lissajousXmas.points[98].y = 2256;
-		lissajousXmas.points[98].suppressPreviousTrack = false;
-
-		lissajousXmas.points[99].x = 3253;
-		lissajousXmas.points[99].y = 2275;
-		lissajousXmas.points[99].suppressPreviousTrack = false;
-
-		lissajousXmas.points[100].x = 3195;
-		lissajousXmas.points[100].y = 2275;
-		lissajousXmas.points[100].suppressPreviousTrack = false;
-
-		lissajousXmas.points[101].x = 3170;
-		lissajousXmas.points[101].y = 2243;
-		lissajousXmas.points[101].suppressPreviousTrack = false;
-
-		lissajousXmas.points[102].x = 3163;
-		lissajousXmas.points[102].y = 2205;
-		lissajousXmas.points[102].suppressPreviousTrack = false;
-
-		lissajousXmas.points[103].x = 3195;
-		lissajousXmas.points[103].y = 2173;
-		lissajousXmas.points[103].suppressPreviousTrack = false;
-
-		lissajousXmas.points[104].x = 3266;
-		lissajousXmas.points[104].y = 2147;
-		lissajousXmas.points[104].suppressPreviousTrack = false;
-
-		lissajousXmas.points[105].x = 3374;
-		lissajousXmas.points[105].y = 2115;
-		lissajousXmas.points[105].suppressPreviousTrack = false;
-
-		lissajousXmas.points[106].x = 3470;
-		lissajousXmas.points[106].y = 2083;
-		lissajousXmas.points[106].suppressPreviousTrack = false;
-
-		lissajousXmas.points[107].x = 3522;
-		lissajousXmas.points[107].y = 2051;
-		lissajousXmas.points[107].suppressPreviousTrack = false;
-
-		lissajousXmas.points[108].x = 3560;
-		lissajousXmas.points[108].y = 1994;
-		lissajousXmas.points[108].suppressPreviousTrack = false;
-
-		lissajousXmas.points[109].x = 3586;
-		lissajousXmas.points[109].y = 1917;
-		lissajousXmas.points[109].suppressPreviousTrack = false;
-
-		lissajousXmas.points[110].x = 3579;
-		lissajousXmas.points[110].y = 1834;
-		lissajousXmas.points[110].suppressPreviousTrack = false;
-
-		lissajousXmas.points[111].x = 3528;
-		lissajousXmas.points[111].y = 1744;
-		lissajousXmas.points[111].suppressPreviousTrack = false;
-
-		lissajousXmas.points[112].x = 3477;
-		lissajousXmas.points[112].y = 1712;
-		lissajousXmas.points[112].suppressPreviousTrack = false;
-
-		lissajousXmas.points[113].x = 3394;
-		lissajousXmas.points[113].y = 1680;
-		lissajousXmas.points[113].suppressPreviousTrack = false;
-
-		lissajousXmas.points[114].x = 3291;
-		lissajousXmas.points[114].y = 1654;
-		lissajousXmas.points[114].suppressPreviousTrack = false;
-
-		lissajousXmas.points[115].x = 3214;
-		lissajousXmas.points[115].y = 1654;
-		lissajousXmas.points[115].suppressPreviousTrack = false;
-
-		lissajousXmas.points[116].x = 3131;
-		lissajousXmas.points[116].y = 1674;
-		lissajousXmas.points[116].suppressPreviousTrack = false;
-
-		lissajousXmas.points[117].x = 3067;
-		lissajousXmas.points[117].y = 1706;
-		lissajousXmas.points[117].suppressPreviousTrack = false;
-
-		lissajousXmas.points[118].x = 3016;
-		lissajousXmas.points[118].y = 1738;
-		lissajousXmas.points[118].suppressPreviousTrack = false;
-
-		lissajousXmas.points[119].x = 2952;
-		lissajousXmas.points[119].y = 1814;
-		lissajousXmas.points[119].suppressPreviousTrack = false;
-
-		lissajousXmas.points[120].x = 2920;
-		lissajousXmas.points[120].y = 1898;
-		lissajousXmas.points[120].suppressPreviousTrack = false;
-
-		// Figuur afsluiten met kopie van eerste punt.
-		lissajousXmas.points[121].x = 296;
-		lissajousXmas.points[121].y = 1667;
-		lissajousXmas.points[121].suppressPreviousTrack = true;
-		
-		// Aantal punten megeven.
-		lissajousXmas.length = 122;
-	}
-	#endif
-	
 	#ifdef RECTANGLE
 	{
 		lissajousRectangle.points[0].x = 674;
@@ -1152,8 +657,7 @@ int main(void)
 		lissajousRectangle.points[3].x = 3138;
 		lissajousRectangle.points[3].y = 798;
 		lissajousRectangle.points[3].suppressPreviousTrack = false;
-		
-		
+				
 		// Figuur afsluiten met kopie van eerste punt.
 		lissajousRectangle.points[4].x = 674;
 		lissajousRectangle.points[4].y = 862;
@@ -1166,28 +670,373 @@ int main(void)
 	
 	#ifdef PEACE
 	{
-		// TODO: peace sign Lissajous maken...
-		lissajousPeace.points[0].x = 674;
-		lissajousPeace.points[0].y = 862;
+		lissajousPeace.points[0].x = 1806;
+		lissajousPeace.points[0].y = 1227;
 		lissajousPeace.points[0].suppressPreviousTrack = false;
-		lissajousPeace.points[1].x = 629;
-		lissajousPeace.points[1].y = 2974;
+
+		lissajousPeace.points[1].x = 1691;
+		lissajousPeace.points[1].y = 1438;
 		lissajousPeace.points[1].suppressPreviousTrack = false;
-		lissajousPeace.points[2].x = 3150;
-		lissajousPeace.points[2].y = 2930;
+
+		lissajousPeace.points[2].x = 1698;
+		lissajousPeace.points[2].y = 1528;
 		lissajousPeace.points[2].suppressPreviousTrack = false;
-		lissajousPeace.points[3].x = 3138;
-		lissajousPeace.points[3].y = 798;
+
+		lissajousPeace.points[3].x = 1774;
+		lissajousPeace.points[3].y = 1554;
 		lissajousPeace.points[3].suppressPreviousTrack = false;
-		
-		
-		// Figuur afsluiten met kopie van eerste punt.
-		lissajousPeace.points[4].x = 674;
-		lissajousPeace.points[4].y = 862;
+
+		lissajousPeace.points[4].x = 1954;
+		lissajousPeace.points[4].y = 1624;
 		lissajousPeace.points[4].suppressPreviousTrack = false;
 
+		lissajousPeace.points[5].x = 2139;
+		lissajousPeace.points[5].y = 1688;
+		lissajousPeace.points[5].suppressPreviousTrack = false;
+
+		lissajousPeace.points[6].x = 2274;
+		lissajousPeace.points[6].y = 1848;
+		lissajousPeace.points[6].suppressPreviousTrack = false;
+
+		lissajousPeace.points[7].x = 2267;
+		lissajousPeace.points[7].y = 2008;
+		lissajousPeace.points[7].suppressPreviousTrack = false;
+
+		lissajousPeace.points[8].x = 2274;
+		lissajousPeace.points[8].y = 2155;
+		lissajousPeace.points[8].suppressPreviousTrack = false;
+
+		lissajousPeace.points[9].x = 2280;
+		lissajousPeace.points[9].y = 2507;
+		lissajousPeace.points[9].suppressPreviousTrack = false;
+
+		lissajousPeace.points[10].x = 2299;
+		lissajousPeace.points[10].y = 2654;
+		lissajousPeace.points[10].suppressPreviousTrack = false;
+
+		lissajousPeace.points[11].x = 2357;
+		lissajousPeace.points[11].y = 2725;
+		lissajousPeace.points[11].suppressPreviousTrack = false;
+
+		lissajousPeace.points[12].x = 2459;
+		lissajousPeace.points[12].y = 2763;
+		lissajousPeace.points[12].suppressPreviousTrack = false;
+
+		lissajousPeace.points[13].x = 2542;
+		lissajousPeace.points[13].y = 2750;
+		lissajousPeace.points[13].suppressPreviousTrack = false;
+
+		lissajousPeace.points[14].x = 2606;
+		lissajousPeace.points[14].y = 2712;
+		lissajousPeace.points[14].suppressPreviousTrack = false;
+
+		lissajousPeace.points[15].x = 2645;
+		lissajousPeace.points[15].y = 2654;
+		lissajousPeace.points[15].suppressPreviousTrack = false;
+
+		lissajousPeace.points[16].x = 2658;
+		lissajousPeace.points[16].y = 2565;
+		lissajousPeace.points[16].suppressPreviousTrack = false;
+
+		lissajousPeace.points[17].x = 2664;
+		lissajousPeace.points[17].y = 2450;
+		lissajousPeace.points[17].suppressPreviousTrack = false;
+
+		lissajousPeace.points[18].x = 2651;
+		lissajousPeace.points[18].y = 1861;
+		lissajousPeace.points[18].suppressPreviousTrack = false;
+
+		lissajousPeace.points[19].x = 2683;
+		lissajousPeace.points[19].y = 1784;
+		lissajousPeace.points[19].suppressPreviousTrack = false;
+
+		lissajousPeace.points[20].x = 2728;
+		lissajousPeace.points[20].y = 1739;
+		lissajousPeace.points[20].suppressPreviousTrack = false;
+
+		lissajousPeace.points[21].x = 2824;
+		lissajousPeace.points[21].y = 1701;
+		lissajousPeace.points[21].suppressPreviousTrack = false;
+
+		lissajousPeace.points[22].x = 2894;
+		lissajousPeace.points[22].y = 1701;
+		lissajousPeace.points[22].suppressPreviousTrack = false;
+
+		lissajousPeace.points[23].x = 2971;
+		lissajousPeace.points[23].y = 1746;
+		lissajousPeace.points[23].suppressPreviousTrack = false;
+
+		lissajousPeace.points[24].x = 3016;
+		lissajousPeace.points[24].y = 1797;
+		lissajousPeace.points[24].suppressPreviousTrack = false;
+
+		lissajousPeace.points[25].x = 3029;
+		lissajousPeace.points[25].y = 1848;
+		lissajousPeace.points[25].suppressPreviousTrack = false;
+
+		lissajousPeace.points[26].x = 3029;
+		lissajousPeace.points[26].y = 1918;
+		lissajousPeace.points[26].suppressPreviousTrack = false;
+
+		lissajousPeace.points[27].x = 3022;
+		lissajousPeace.points[27].y = 2328;
+		lissajousPeace.points[27].suppressPreviousTrack = false;
+
+		lissajousPeace.points[28].x = 3003;
+		lissajousPeace.points[28].y = 2411;
+		lissajousPeace.points[28].suppressPreviousTrack = false;
+
+		lissajousPeace.points[29].x = 2952;
+		lissajousPeace.points[29].y = 2482;
+		lissajousPeace.points[29].suppressPreviousTrack = false;
+
+		lissajousPeace.points[30].x = 2901;
+		lissajousPeace.points[30].y = 2514;
+		lissajousPeace.points[30].suppressPreviousTrack = false;
+
+		lissajousPeace.points[31].x = 2850;
+		lissajousPeace.points[31].y = 2514;
+		lissajousPeace.points[31].suppressPreviousTrack = false;
+
+		lissajousPeace.points[32].x = 2754;
+		lissajousPeace.points[32].y = 2514;
+		lissajousPeace.points[32].suppressPreviousTrack = false;
+
+		lissajousPeace.points[33].x = 2709;
+		lissajousPeace.points[33].y = 2501;
+		lissajousPeace.points[33].suppressPreviousTrack = false;
+
+		lissajousPeace.points[34].x = 2670;
+		lissajousPeace.points[34].y = 2469;
+		lissajousPeace.points[34].suppressPreviousTrack = false;
+
+		lissajousPeace.points[35].x = 2280;
+		lissajousPeace.points[35].y = 1874;
+		lissajousPeace.points[35].suppressPreviousTrack = true;
+
+		lissajousPeace.points[36].x = 2299;
+		lissajousPeace.points[36].y = 1822;
+		lissajousPeace.points[36].suppressPreviousTrack = false;
+
+		lissajousPeace.points[37].x = 2370;
+		lissajousPeace.points[37].y = 1771;
+		lissajousPeace.points[37].suppressPreviousTrack = false;
+
+		lissajousPeace.points[38].x = 2421;
+		lissajousPeace.points[38].y = 1758;
+		lissajousPeace.points[38].suppressPreviousTrack = false;
+
+		lissajousPeace.points[39].x = 2498;
+		lissajousPeace.points[39].y = 1746;
+		lissajousPeace.points[39].suppressPreviousTrack = false;
+
+		lissajousPeace.points[40].x = 2555;
+		lissajousPeace.points[40].y = 1778;
+		lissajousPeace.points[40].suppressPreviousTrack = false;
+
+		lissajousPeace.points[41].x = 3035;
+		lissajousPeace.points[41].y = 1790;
+		lissajousPeace.points[41].suppressPreviousTrack = true;
+
+		lissajousPeace.points[42].x = 3035;
+		lissajousPeace.points[42].y = 1746;
+		lissajousPeace.points[42].suppressPreviousTrack = false;
+
+		lissajousPeace.points[43].x = 3022;
+		lissajousPeace.points[43].y = 1598;
+		lissajousPeace.points[43].suppressPreviousTrack = false;
+
+		lissajousPeace.points[44].x = 3022;
+		lissajousPeace.points[44].y = 1413;
+		lissajousPeace.points[44].suppressPreviousTrack = false;
+
+		lissajousPeace.points[45].x = 3029;
+		lissajousPeace.points[45].y = 1317;
+		lissajousPeace.points[45].suppressPreviousTrack = false;
+
+		lissajousPeace.points[46].x = 3003;
+		lissajousPeace.points[46].y = 1214;
+		lissajousPeace.points[46].suppressPreviousTrack = false;
+
+		lissajousPeace.points[47].x = 2965;
+		lissajousPeace.points[47].y = 1112;
+		lissajousPeace.points[47].suppressPreviousTrack = false;
+
+		lissajousPeace.points[48].x = 2907;
+		lissajousPeace.points[48].y = 997;
+		lissajousPeace.points[48].suppressPreviousTrack = false;
+
+		lissajousPeace.points[49].x = 2830;
+		lissajousPeace.points[49].y = 901;
+		lissajousPeace.points[49].suppressPreviousTrack = false;
+
+		lissajousPeace.points[50].x = 2747;
+		lissajousPeace.points[50].y = 805;
+		lissajousPeace.points[50].suppressPreviousTrack = false;
+
+		lissajousPeace.points[51].x = 2619;
+		lissajousPeace.points[51].y = 728;
+		lissajousPeace.points[51].suppressPreviousTrack = false;
+
+		lissajousPeace.points[52].x = 2427;
+		lissajousPeace.points[52].y = 664;
+		lissajousPeace.points[52].suppressPreviousTrack = false;
+
+		lissajousPeace.points[53].x = 2210;
+		lissajousPeace.points[53].y = 638;
+		lissajousPeace.points[53].suppressPreviousTrack = false;
+
+		lissajousPeace.points[54].x = 2018;
+		lissajousPeace.points[54].y = 638;
+		lissajousPeace.points[54].suppressPreviousTrack = false;
+
+		lissajousPeace.points[55].x = 1819;
+		lissajousPeace.points[55].y = 658;
+		lissajousPeace.points[55].suppressPreviousTrack = false;
+
+		lissajousPeace.points[56].x = 1646;
+		lissajousPeace.points[56].y = 709;
+		lissajousPeace.points[56].suppressPreviousTrack = false;
+
+		lissajousPeace.points[57].x = 1512;
+		lissajousPeace.points[57].y = 798;
+		lissajousPeace.points[57].suppressPreviousTrack = false;
+
+		lissajousPeace.points[58].x = 1384;
+		lissajousPeace.points[58].y = 875;
+		lissajousPeace.points[58].suppressPreviousTrack = false;
+
+		lissajousPeace.points[59].x = 1288;
+		lissajousPeace.points[59].y = 1054;
+		lissajousPeace.points[59].suppressPreviousTrack = false;
+
+		lissajousPeace.points[60].x = 1211;
+		lissajousPeace.points[60].y = 1234;
+		lissajousPeace.points[60].suppressPreviousTrack = false;
+
+		lissajousPeace.points[61].x = 1160;
+		lissajousPeace.points[61].y = 1509;
+		lissajousPeace.points[61].suppressPreviousTrack = false;
+
+		lissajousPeace.points[62].x = 1154;
+		lissajousPeace.points[62].y = 1630;
+		lissajousPeace.points[62].suppressPreviousTrack = false;
+
+		lissajousPeace.points[63].x = 1179;
+		lissajousPeace.points[63].y = 1733;
+		lissajousPeace.points[63].suppressPreviousTrack = false;
+
+		lissajousPeace.points[64].x = 1237;
+		lissajousPeace.points[64].y = 1803;
+		lissajousPeace.points[64].suppressPreviousTrack = false;
+
+		lissajousPeace.points[65].x = 1320;
+		lissajousPeace.points[65].y = 1854;
+		lissajousPeace.points[65].suppressPreviousTrack = false;
+
+		lissajousPeace.points[66].x = 1384;
+		lissajousPeace.points[66].y = 1874;
+		lissajousPeace.points[66].suppressPreviousTrack = false;
+
+		lissajousPeace.points[67].x = 2242;
+		lissajousPeace.points[67].y = 2085;
+		lissajousPeace.points[67].suppressPreviousTrack = false;
+
+		lissajousPeace.points[68].x = 2254;
+		lissajousPeace.points[68].y = 2098;
+		lissajousPeace.points[68].suppressPreviousTrack = false;
+
+		lissajousPeace.points[69].x = 2286;
+		lissajousPeace.points[69].y = 2661;
+		lissajousPeace.points[69].suppressPreviousTrack = true;
+
+		lissajousPeace.points[70].x = 2274;
+		lissajousPeace.points[70].y = 3294;
+		lissajousPeace.points[70].suppressPreviousTrack = false;
+
+		lissajousPeace.points[71].x = 2242;
+		lissajousPeace.points[71].y = 3403;
+		lissajousPeace.points[71].suppressPreviousTrack = false;
+
+		lissajousPeace.points[72].x = 2197;
+		lissajousPeace.points[72].y = 3461;
+		lissajousPeace.points[72].suppressPreviousTrack = false;
+
+		lissajousPeace.points[73].x = 2075;
+		lissajousPeace.points[73].y = 3512;
+		lissajousPeace.points[73].suppressPreviousTrack = false;
+
+		lissajousPeace.points[74].x = 1998;
+		lissajousPeace.points[74].y = 3506;
+		lissajousPeace.points[74].suppressPreviousTrack = false;
+
+		lissajousPeace.points[75].x = 1934;
+		lissajousPeace.points[75].y = 3474;
+		lissajousPeace.points[75].suppressPreviousTrack = false;
+
+		lissajousPeace.points[76].x = 1883;
+		lissajousPeace.points[76].y = 3410;
+		lissajousPeace.points[76].suppressPreviousTrack = false;
+
+		lissajousPeace.points[77].x = 1870;
+		lissajousPeace.points[77].y = 3333;
+		lissajousPeace.points[77].suppressPreviousTrack = false;
+
+		lissajousPeace.points[78].x = 1826;
+		lissajousPeace.points[78].y = 2251;
+		lissajousPeace.points[78].suppressPreviousTrack = false;
+
+		lissajousPeace.points[79].x = 1781;
+		lissajousPeace.points[79].y = 2270;
+		lissajousPeace.points[79].suppressPreviousTrack = false;
+
+		lissajousPeace.points[80].x = 1422;
+		lissajousPeace.points[80].y = 3083;
+		lissajousPeace.points[80].suppressPreviousTrack = false;
+
+		lissajousPeace.points[81].x = 1384;
+		lissajousPeace.points[81].y = 3122;
+		lissajousPeace.points[81].suppressPreviousTrack = false;
+
+		lissajousPeace.points[82].x = 1307;
+		lissajousPeace.points[82].y = 3160;
+		lissajousPeace.points[82].suppressPreviousTrack = false;
+
+		lissajousPeace.points[83].x = 1230;
+		lissajousPeace.points[83].y = 3166;
+		lissajousPeace.points[83].suppressPreviousTrack = false;
+
+		lissajousPeace.points[84].x = 1134;
+		lissajousPeace.points[84].y = 3122;
+		lissajousPeace.points[84].suppressPreviousTrack = false;
+
+		lissajousPeace.points[85].x = 1090;
+		lissajousPeace.points[85].y = 3064;
+		lissajousPeace.points[85].suppressPreviousTrack = false;
+
+		lissajousPeace.points[86].x = 1070;
+		lissajousPeace.points[86].y = 2987;
+		lissajousPeace.points[86].suppressPreviousTrack = false;
+
+		lissajousPeace.points[87].x = 1083;
+		lissajousPeace.points[87].y = 2917;
+		lissajousPeace.points[87].suppressPreviousTrack = false;
+
+		lissajousPeace.points[88].x = 1115;
+		lissajousPeace.points[88].y = 2846;
+		lissajousPeace.points[88].suppressPreviousTrack = false;
+
+		lissajousPeace.points[89].x = 1397;
+		lissajousPeace.points[89].y = 1906;
+		lissajousPeace.points[89].suppressPreviousTrack = false;		
+		
+		// Figuur afsluiten met kopie van eerste punt.
+		lissajousPeace.points[90].x = 1806;
+		lissajousPeace.points[90].y = 1227;
+		lissajousPeace.points[90].suppressPreviousTrack = true;
+
 		// Aantal punten megeven.
-		lissajousPeace.length = 5;
+		lissajousPeace.length = 91;
 	}
 	#endif
 	
@@ -1201,7 +1050,7 @@ int main(void)
 			#endif
 			
 			// Teken de volledige figuur... Duurt ongeveer 15ms voor de Kerstboom (vastgesteld via meting).
-			if(!run)
+			if(!runMotor)
 				// Indien geen m&m wordt afgeleverd, toon de kerstboom.
 				DrawLissajous(&lissajousXmas, lissajousXmas.length);		
 			else
@@ -1218,11 +1067,11 @@ int main(void)
 		
 		// m&m code
 		{
-			// Flank gezien, lever één M&M af.
+			// Flank gezien op SW1, lever één M&M af.
 			if(SW1Active() && (sw1Help == false))
 			{
 				sw1Help = true;
-				run = true;
+				runMotor = true;
 			}
 			if(!SW1Active())
 				sw1Help = false;
@@ -1233,7 +1082,7 @@ int main(void)
 				// Byte ontvangen, lees hem om alle vlaggen te wissen.
 				if(USART2->RDR == 'm')
 				{
-					run = true;
+					runMotor = true;
 				}
 			}
 				
@@ -1247,24 +1096,24 @@ int main(void)
 			wannabeTimer++;
 			
 			// Zolang nodig, draai.
-			if((run) && (wannabeTimer < (ERROR_TIMEOUT/LOOP_DELAY)))
+			if((runMotor) && (wannabeTimer < (ERROR_TIMEOUT/LOOP_DELAY)))
 				SetPwm(SERVO_JUST_BELOW_MIDPOINT + adValue - SERVO_SPEED);
 			else
 			{
 				SetPwm(SERVO_JUST_BELOW_MIDPOINT + adValue);
 				wannabeTimer = 0;
-				run = false;
+				runMotor = false;
 			}
 				
 			// Vallende m&m gedetecteerd (flankdetectie)? Stop.
 			if(IR1Active() && (IR1Help == false))
 			{
 				IR1Help = true;
-				run = false;			
-				count++;			
+				runMotor = false;			
+				mAndMsDelivered++;			
 				ToggleLed(1);
 				
-				sprintf(text, "%d\r\n", count);
+				sprintf(text, "%d\r\n", mAndMsDelivered);
 				StringToUsart2(text);
 			}		
 			if(!IR1Active())

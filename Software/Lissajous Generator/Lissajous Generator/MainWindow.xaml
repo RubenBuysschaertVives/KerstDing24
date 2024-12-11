@@ -11,7 +11,7 @@
         <Border BorderThickness="1"  DockPanel.Dock="Top" BorderBrush="Red">
             <Grid>
                 <Image Width="512" Height="512" MouseLeftButtonDown="Image_MouseLeftButtonDown" 
-                   MouseRightButtonDown="Image_MouseRightButtonDown" Source="kerstboom.jpg" Name="imgToDraw"></Image>
+                   MouseRightButtonDown="Image_MouseRightButtonDown" Source="peace.png" Name="imgToDraw"></Image>
                 <Canvas x:Name="cnvsToDraw"></Canvas>
             </Grid>
         </Border>        

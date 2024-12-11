@@ -21,4 +21,6 @@
 		Point points[MAX_NUMBER_OF_POINTS];
 		uint16_t length;									// Geeft aan hoeveel punten er getekend moeten worden.
 	}Lissajous;
+	
+	void DrawLissajous(Lissajous* lissajousXmas, uint16_t count);
 #endif
