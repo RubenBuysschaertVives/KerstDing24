@@ -23,6 +23,8 @@ import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 import time
+from datetime import datetime
+import numpy as np
 
 # Constantes.
 M_AND_M_DELAY = 9
@@ -33,7 +35,7 @@ busy = False
 last_peace_sign_detection = 0
 
 # COM-poort openen naar de Nucleo van het m&m toestel.
-# serial_port = serial.Serial('COM8', 115200)
+# serial_port = serial.Serial('COM11', 115200)
 serial_port = serial.Serial('/dev/ttyACM0', 115200)
 
 # Webcam openen via OpenCV.
@@ -82,6 +84,11 @@ def detection_callback(gesture_recognition_result, output_image, timestamp_ms):
                 print("m&m request sent to microcontroller.")
                 # Nieuwe tijd opslaan.
                 last_peace_sign_detection = time.time()
+                # Afbeelding opslaan.
+                # imagename= "savedDetections/peace - " + datetime.now().strftime("%Y%m%d%H%M%S") + ".jpg"
+                imagename= "Software/Peace detection/savedDetections/peace - " + datetime.now().strftime("%Y%m%d%H%M%S") + ".jpg"
+                image_data = np.array(mp_image.numpy_view())
+                cv2.imwrite(imagename, image_data)
 
     # Aangeven dat de verwerking voorbij is (en een nieuwe mag beginnen in de 'hoofdlus').
     busy = False
@@ -90,8 +97,8 @@ def detection_callback(gesture_recognition_result, output_image, timestamp_ms):
 # Zie: https://ai.google.dev/edge/mediapipe/solutions/vision/gesture_recognizer/python#live-stream
 # Gesture recognizer objecten maken.
 # OPM: pad kan aanpassingen vereisen als je op de Raspberry Pi werkt (Windows/Linux).
-# gesture_recognizer_base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
-gesture_recognizer_base_options = python.BaseOptions(model_asset_path='Software/Peace detection/gesture_recognizer.task')
+gesture_recognizer_base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
+# gesture_recognizer_base_options = python.BaseOptions(model_asset_path='Software/Peace detection/gesture_recognizer.task')
 gesture_recognizer_options = vision.GestureRecognizerOptions(base_options=gesture_recognizer_base_options,
                                         running_mode=mp.tasks.vision.RunningMode.LIVE_STREAM,
                                         num_hands=4,
