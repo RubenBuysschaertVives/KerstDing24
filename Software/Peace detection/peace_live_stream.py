@@ -97,8 +97,8 @@ def detection_callback(gesture_recognition_result, output_image, timestamp_ms):
 # Zie: https://ai.google.dev/edge/mediapipe/solutions/vision/gesture_recognizer/python#live-stream
 # Gesture recognizer objecten maken.
 # OPM: pad kan aanpassingen vereisen als je op de Raspberry Pi werkt (Windows/Linux).
-gesture_recognizer_base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
-# gesture_recognizer_base_options = python.BaseOptions(model_asset_path='Software/Peace detection/gesture_recognizer.task')
+# gesture_recognizer_base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
+gesture_recognizer_base_options = python.BaseOptions(model_asset_path='Software/Peace detection/gesture_recognizer.task')
 gesture_recognizer_options = vision.GestureRecognizerOptions(base_options=gesture_recognizer_base_options,
                                         running_mode=mp.tasks.vision.RunningMode.LIVE_STREAM,
                                         num_hands=4,
